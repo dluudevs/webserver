@@ -10,19 +10,28 @@ const app = express()
 // blank implies root level of website
 // req - request object ; res - res - methods to send requester
 app.get('', (req, res) => {
-  res.send('Hello express!')
+  res.send('<h1>Weather</h1>')
 })
 
 app.get('/help', (req, res) => {
-  res.send('Help page')
+  // express detects an object / array being provided, and will stringify the data to JSON format
+  res.send([{
+    name: 'Delvv',
+    age: 30
+  },{
+    name: 'Sarah'
+  }])
 })
 
 app.get('/about', (req, res) => {
-  res.send('About page')
+  res.send('<h1>About</h1>')
 })
 
 app.get('/weather', (req, res) => {
-  res.send('Weather page')
+  res.send({
+    location: 'Markham Ontario, Canada',
+    weather: 'The temperature is 55, it feels like 54'
+  })
 })
 
 // starts up server and listens on specific port
