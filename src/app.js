@@ -7,15 +7,20 @@ const express = require('express')
 // express is a function
 // configure server using objects on returned value
 const app = express()
+
+// define paths for express config
 const publicDirectoryPath = path.join(__dirname,'../public')
+const viewsPath = path.join(__dirname, '../templates')
 
 // this method lets express know which templating engine is installed
 // method sets value for given express setting - here we are setting up the view engine as hbs (name of the module)
 // express will expect a folder called views in the root folder 
 app.set('view engine', 'hbs')
+// set up views path
+app.set('views', viewsPath)
 
 // use method customizes the server - here we are customizing the server to serve the public folder
-// returned value of express.static is passed to use. static method takes the absolute path to the folder the server needs to serve
+// returned value of express.static is passed to use. static method takes the absolute path to the static directory the server needs to serve
 // pointing to this folder will automatically serve index.html (if the file exists)
 app.use(express.static(publicDirectoryPath))
 
