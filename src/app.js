@@ -60,12 +60,28 @@ app.get('/help', (req, res) => {
 // route and function as arguments. function describes what gets sent to the user when this route is visited 
 // blank implies root level of website
 // req - request object ; res - res - methods to send requested
-// *** No longer need this, because app.use can serve a specific folder based on the path (of website) a user is visiting
-// *** Once express finds the path the user is visiting, it will no longer continue searching
+// App.use can serve a specific folder based on the path (of website) a user is visiting (if you're only serving static content)
 app.get('/weather', (req, res) => {
   res.send({
     location: 'Markham Ontario, Canada',
     weather: 'The temperature is 55, it feels like 54'
+  })
+})
+
+// for any paths that start with /help that do not exist
+app.get('/help/*', (req, res) => {
+  res.render('404', {
+    name: 'Derek',
+    errorMessage: 'Help article not found'
+  })
+})
+
+// * is a wild card that matches everything else not matched so far in the above get methods
+// express looks for the path synchronously therfore the 404 page must be the last get method
+app.get('*', (req, res) => {
+  res.render('404', {
+    name: 'Derek',
+    errorMessage: 'Page not found'
   })
 })
 
