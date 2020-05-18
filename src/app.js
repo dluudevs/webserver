@@ -9,9 +9,38 @@ const express = require('express')
 const app = express()
 const publicDirectoryPath = path.join(__dirname,'../public')
 
+// this method lets express know which templating engine is installed
+// method sets value for given express setting - here we are setting up the view engine as hbs (name of the module)
+// express will expect a folder called views in the root folder 
+app.set('view engine', 'hbs')
+
 // use method customizes the server - here we are customizing the server to serve the public folder
 // returned value of express.static is passed to use. static method takes the absolute path to the folder the server needs to serve
+// pointing to this folder will automatically serve index.html (if the file exists)
 app.use(express.static(publicDirectoryPath))
+
+app.get('', (req, res) => {
+  // render method will render one of our views (a file that is using the view engine)
+  // string passed just needs to match the name of the file inside of the view folder
+  // second value is object that can be accessed by the view
+  res.render('index', {
+    title: 'Weather',
+    name: 'Derek'
+  })
+})
+
+app.get('/about', (req, res) => {
+  res.render('about', {
+    title: 'About Me',
+    name: 'Derek'
+  })
+})
+
+app.get('/help', (req, res) => {
+  res.render('help', {
+    helpText: 'This is some helpful text'
+  })
+})
 
 // route and function as arguments. function describes what gets sent to the user when this route is visited 
 // blank implies root level of website
