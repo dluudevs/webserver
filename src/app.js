@@ -1,8 +1,13 @@
+// *** to run nodemon src/app.js -e js,hbs 
+// -e flag stands for extension, nodemon will now restart the server when js and hbs files are saved
+
 // path is a core module (comes out of the box with node)
 const path = require('path')
 // express is a framework (npm module) that uses node to make the develop of web servers a lot easier / faster
 // currently in this example we are using a web server to server HTML, however it can also be used to server a HTTP JSON API
 const express = require('express')
+// require hbs to setup partials (partials is a small portion of code)
+const hbs = require('hbs')
 
 // express is a function
 // configure server using objects on returned value
@@ -10,7 +15,8 @@ const app = express()
 
 // define paths for express config
 const publicDirectoryPath = path.join(__dirname,'../public')
-const viewsPath = path.join(__dirname, '../templates')
+const viewsPath = path.join(__dirname, '../templates/views')
+const partialsPath = path.join(__dirname, '../templates/partials')
 
 // this method lets express know which templating engine is installed
 // method sets value for given express setting - here we are setting up the view engine as hbs (name of the module)
@@ -18,6 +24,8 @@ const viewsPath = path.join(__dirname, '../templates')
 app.set('view engine', 'hbs')
 // set up views path
 app.set('views', viewsPath)
+// sets up partials path for hbs
+hbs.registerPartials(partialsPath)
 
 // use method customizes the server - here we are customizing the server to serve the public folder
 // returned value of express.static is passed to use. static method takes the absolute path to the static directory the server needs to serve
@@ -43,7 +51,9 @@ app.get('/about', (req, res) => {
 
 app.get('/help', (req, res) => {
   res.render('help', {
-    helpText: 'This is some helpful text'
+    helpText: 'This is some helpful text',
+    title: 'Help',
+    name: 'Derek'
   })
 })
 
