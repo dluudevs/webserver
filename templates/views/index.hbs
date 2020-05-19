@@ -2,18 +2,27 @@
  Lets us reuse pieces of markup and render content dynamically  --}}
 {{!-- this file will replace index.html on home page --}}
 {{!-- hbs is just HTML with a few features for injecting dynamic values --}}
+{{!-- when link to files, hbs files live in the public folder --}}
+
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="img/weather.png">
+  <title>Weather</title>
   <link rel="stylesheet" href="css/styles.css">
   <script src="js/app.js"></script>
 </head>
 <body>
   {{!-- double curly braces to access object passed to view --}}
-  {{>header}}
+  <div class="main-content">
+    {{>header}}
+    <p>Use this site to get your weather!</p>
+  </div>
+
   {{>footer}}
+
 </body>
 </html>
