@@ -62,9 +62,21 @@ app.get('/help', (req, res) => {
 // req - request object ; res - res - methods to send requested
 // App.use can serve a specific folder based on the path (of website) a user is visiting (if you're only serving static content)
 app.get('/weather', (req, res) => {
+  // In any given get method, you can only call the send method on response once. (In this situation if the cobndition is met, function stops running so we're fine) Otherwise you'll get an error like 
+  // "Cannot set headers after they are sent to the client"
+
+  // req.query is an object that contains query string information
+  const address = req.query.address
+  if (!address){
+    return res.send({
+      error: "No address provided"
+    })
+  }
+
   res.send({
-    location: 'Markham Ontario, Canada',
-    weather: 'The temperature is 55, it feels like 54'
+    forecast: 'It is snowing',
+    location: 'Markham',
+    address
   })
 })
 
