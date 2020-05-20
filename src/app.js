@@ -9,6 +9,9 @@ const express = require('express')
 // require hbs to setup partials (partials is a small portion of code)
 const hbs = require('hbs')
 
+const geocode = require('./utils/geocode')
+const forecast = require('./utils/forecast')
+
 // express is a function
 // configure server using objects on returned value
 const app = express()
@@ -73,11 +76,23 @@ app.get('/weather', (req, res) => {
     })
   }
 
-  res.send({
-    forecast: 'It is snowing',
-    location: 'Markham',
-    address
-  })
+  geocode(address, (error, { longitude, latitude, location } = {}) => {
+    if (error){
+      return res.send({ error })
+    }
+
+    forecast(latitude, longitude, (error, forecastData) => {
+      if (error){
+        return req.send({ error })
+      }
+      
+      res.send({
+        forecast: forecastData,
+        location,
+        address
+      })
+    })
+  })  
 })
 
 // for any paths that start with /help that do not exist
