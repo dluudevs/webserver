@@ -15,7 +15,8 @@ const forecast = require('./utils/forecast')
 // express is a function
 // configure server using objects on returned value
 const app = express()
-
+// heroku sets environment variable in port. if environment variable not available (not running on heroku), use port 3000 (dev)
+const port = process.env.PORT || 3000
 // define paths for express config
 const publicDirectoryPath = path.join(__dirname,'../public')
 const viewsPath = path.join(__dirname, '../templates/views')
@@ -113,8 +114,7 @@ app.get('*', (req, res) => {
 })
 
 // starts up server and listens on specific port
-// use nodemon to run server to have server restart when files are updated
-app.listen(3000, () => {
-  console.log('Server is up on port 3000')
+app.listen(port, () => {
+  console.log('Server is up on port: ' + port)
 })
 
