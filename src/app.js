@@ -68,7 +68,7 @@ app.get('/help', (req, res) => {
 // blank implies root level of website
 // req - request object ; res - res - methods to send requested
 // App.use can serve a specific folder based on the path (of website) a user is visiting (if you're only serving static content)
-app.get('/weather', (req, res) => {
+app.get('/weather', async (req, res) => {
   // In any given get method, you can only call the send method on response once. (In this situation if the cobndition is met, function stops running so we're fine) Otherwise you'll get an error like 
   // "Cannot set headers after they are sent to the client"
 
@@ -86,41 +86,30 @@ app.get('/weather', (req, res) => {
 
   // what would this look like if the callback to the get method is an async function
   if (address){
-    geocode(address, (error, { longitude, latitude, location } = {}) => {
-      if (error){
-        return res.send({ error })
-      }
-      forecast(latitude, longitude, (error, forecastData) => {
-        if (error){
-          return req.send({ error })
-        }
-        
-        res.send({
-          forecast: forecastData,
-          location,
-          address
-        })
+    try {
+      const { longitude, latitude, location } = await geocode(address)
+      const forecastData = await forecast(latitude, longitude)
+      
+      res.send({
+        forecast: forecastData,
+        location,
+        address
       })
-    })  
+    } catch (error) {
+      res.send({ error })
+    }  
   }
 
   if (coords){
     const [ latitude, longitude ] = coords.split(',')
-    reverseGeocode(latitude, longitude, (error, { location }) => {
-      if(error){
-        return req.send({error})
-      }
-      forecast(latitude, longitude, (error, forecastData) => {
-        if (error){
-          return req.send({ error })
-        }
-        
-        res.send({
-          forecast: forecastData,
-          location,
-        })
-      })
-    })
+    try {
+      const location = await reverseGeocode(latitude, longitude)
+      const forecastData = await forecast(latitude, longitude)
+      
+      res.send({ forecast: forecastData, location })
+    } catch (error) {
+      res.send({ error })
+    }
   }
 })
 
