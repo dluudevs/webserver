@@ -11,6 +11,7 @@ const hbs = require('hbs')
 
 const geocode = require('./utils/geocode')
 const forecast = require('./utils/forecast')
+const reverseGeocode = require('./utils/reverseGeocode')
 
 // express is a function
 // configure server using objects on returned value
@@ -25,13 +26,15 @@ const partialsPath = path.join(__dirname, '../templates/partials')
 // this method lets express know which templating engine is installed
 // method sets value for given express setting - here we are setting up the view engine as hbs (name of the module)
 // express will expect a folder called views in the root folder 
+// set can be thought of as a way to store variables
 app.set('view engine', 'hbs')
-// set up views path
+// set up views path (the various pages)
 app.set('views', viewsPath)
 // sets up partials path for hbs
 hbs.registerPartials(partialsPath)
 
-// use method customizes the server - here we are customizing the server to serve the public folder
+// use method customizes the server - here we are customizing the server to serve the public folder 
+// customize server through the use of middleware
 // returned value of express.static is passed to use. static method takes the absolute path to the static directory the server needs to serve
 // pointing to this folder will automatically serve index.html (if the file exists)
 app.use(express.static(publicDirectoryPath))
@@ -70,30 +73,55 @@ app.get('/weather', (req, res) => {
   // "Cannot set headers after they are sent to the client"
 
   // req.query is an object that contains query string information
+  // the request is made in the client side js file 
+  // once this route is requested, the callback function runs. It can vary from rendering a view or running a program
   const address = req.query.address
-  if (!address){
+  const coords = req.query.coords
+
+  if (!address && !coords){
     return res.send({
-      error: "No address provided"
+      error: "No address or location provided"
     })
   }
 
-  geocode(address, (error, { longitude, latitude, location } = {}) => {
-    if (error){
-      return res.send({ error })
-    }
-
-    forecast(latitude, longitude, (error, forecastData) => {
+  // what would this look like if the callback to the get method is an async function
+  if (address){
+    geocode(address, (error, { longitude, latitude, location } = {}) => {
       if (error){
-        return req.send({ error })
+        return res.send({ error })
       }
-      
-      res.send({
-        forecast: forecastData,
-        location,
-        address
+      forecast(latitude, longitude, (error, forecastData) => {
+        if (error){
+          return req.send({ error })
+        }
+        
+        res.send({
+          forecast: forecastData,
+          location,
+          address
+        })
+      })
+    })  
+  }
+
+  if (coords){
+    const [ latitude, longitude ] = coords.split(',')
+    reverseGeocode(latitude, longitude, (error, { location }) => {
+      if(error){
+        return req.send({error})
+      }
+      forecast(latitude, longitude, (error, forecastData) => {
+        if (error){
+          return req.send({ error })
+        }
+        
+        res.send({
+          forecast: forecastData,
+          location,
+        })
       })
     })
-  })  
+  }
 })
 
 // for any paths that start with /help that do not exist

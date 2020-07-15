@@ -4,7 +4,6 @@
 {{!-- hbs is just HTML with a few features for injecting dynamic values --}}
 {{!-- when link to files, hbs files live in the public folder --}}
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,7 +21,8 @@
 
     <form>
       <input placeholder="Location">
-      <button>Search</button>
+      <button type="submit">Search</button>
+      <button type="button" id="user-location">Use My Location</button>
     </form>
 
     <p id="message-1"></p>

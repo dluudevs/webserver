@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/app.js",
+    "__comment": "tho nodemon is install locally and wont work in CLI, it will work as a script since it is listed as a dependency",
     "dev": "nodemon src/app.js -e js,hbs"
   },
   "keywords": [],
